@@ -1,16 +1,45 @@
 #include <stdio.h> 
 #include <string.h>
-#include<stdlib.h>
+#include <stdlib.h>
 //common function for comparing strings
 int compString(char userAString[], char definedString[], char userString[])
 {
 	if (strcmp(userAString,definedString) == 0)
-		printf("\nResult--> %s satisfies the defined DFA\n",userString);
+		printf("\nResult--> %s satisfies the defined DFA 'ACCEPTED'\n",userString);
 	else
-		printf("\nResult--> %s does not satisfy the defined DFA\n",userString);
+		printf("\nResult--> %s does not satisfy the defined DFA 'NOT ACCEPTED'\n",userString);
 	return 0;
 }
-//Comparing string with defined DFA
+//test string with defined DFA
+int substring(char userString[], char definedString[],int userStringLen, int NUMBER_OF_INPUT_SYMBOLS)
+{
+	char userAString[NUMBER_OF_INPUT_SYMBOLS];
+	if (userStringLen > NUMBER_OF_INPUT_SYMBOLS)
+	{
+		for (int i = 0; i < userStringLen/NUMBER_OF_INPUT_SYMBOLS; ++i)
+		{
+			for (int j = 0; j < NUMBER_OF_INPUT_SYMBOLS; ++j)
+			{
+				userAString[i] = userString[i];
+			}
+			if (strcmp(userAString,definedString)==0)
+			{
+				printf("%s ACCEPTED\n",userString);
+				//goto end;
+
+			}
+		}
+	}
+	else if (userStringLen < NUMBER_OF_INPUT_SYMBOLS)
+	{
+		printf("Less number of input symboles:(\nDefined DFA required %d input symbols.\n",NUMBER_OF_INPUT_SYMBOLS);
+	}
+	else
+		strcpy(userAString, userString);
+	//Comparing user string with correct string value
+	compString(userAString,definedString,userString);	
+	return 0;
+}
 int endWith(char userString[], char definedString[],int userStringLen, int NUMBER_OF_INPUT_SYMBOLS)
 {
 
@@ -60,25 +89,29 @@ int begWith(char userString[], char definedString[],int userStringLen, int NUMBE
 }
 //Defining DFA
 int defineDFA(){
-	int NUMBER_OF_STATES;
-	printf("............................Setting the states of DFA......................\n");
-	printf("How many states you want to set for your DFA: ");
+	int NUMBER_OF_INPUT_SYMBOLS;
+	printf("How many input symbols you want to set for your DFA: ");
 	//Total number of states
-	scanf("%d",&NUMBER_OF_STATES);
-	char states[NUMBER_OF_STATES];
-	int NUMBER_OF_INPUT_SYMBOLS = NUMBER_OF_STATES-1;
+	scanf("%d",&NUMBER_OF_INPUT_SYMBOLS);
+	int NUMBER_OF_STATES = NUMBER_OF_INPUT_SYMBOLS+1;
 	char inputSymboles[NUMBER_OF_INPUT_SYMBOLS];
-	printf("\nGive the names for the %d states in single character:\n",NUMBER_OF_STATES);
+	int states[NUMBER_OF_STATES];
+	// printf("\nGive the names for the %d states in single character:\n",NUMBER_OF_STATES);
+	// for (int i = 0; i < NUMBER_OF_STATES; ++i)
+	// {
+	// 	printf("State-%d :",i+1);
+	// 	scanf("%s",&states[i]);
+	// }
+	//Creating names for states
 	for (int i = 0; i < NUMBER_OF_STATES; ++i)
 	{
-		printf("State-%d :",i+1);
-		scanf("%s",&states[i]);
+		states[i] = i;
 	}
 	printf("Enter the sequence of %d input symboles to reach final state: \n",NUMBER_OF_INPUT_SYMBOLS);
 	//Setting input symboles
 	for (int i = 0; i < NUMBER_OF_INPUT_SYMBOLS; ++i)
 	{
-		printf("Input-%d, from state-%c to state-%c:",i+1,states[i],states[i+1]);
+		printf("Input-%d, from state-Q%d to state-Q%d:",i+1,states[i],states[i+1]);
 		scanf("%s",&inputSymboles[i]);
 	}
 	//Select type of DFA
@@ -90,15 +123,15 @@ int defineDFA(){
 	if (KEY == 1 || KEY == 2 || KEY == 3)
 	{
 		//Diagram of DFA
-		printf("\n\nDefined DFA\n:");
+		printf("\n\nDefined DFA :\n\n\t");
 		for (int i = 0; i < NUMBER_OF_STATES; ++i)
 		{
 			if (i < NUMBER_OF_STATES-1)
 			
-				printf("-->%c--(%c)",states[i],inputSymboles[i]);
+				printf("-->Q%d--(%c)",states[i],inputSymboles[i]);
 			
 			else if(i == NUMBER_OF_STATES-1)
-				printf("-->%c\n",states[i]);
+				printf("-->|Q%d|\n\nInitial state:\tQ0\nFinal state:\tQ%d\n",states[i],states[i]);
 		}
 		printf("\n......DFA has been generated sucessfully......\n");
 		//User given string
@@ -107,7 +140,7 @@ int defineDFA(){
 			printf("To check the DFA enter the string: ");
 		scanf("%s",inputString);
 		int len = strlen(inputString);
-		printf("-------------------(Inserting the string into defined DFA)----------------\n");
+		printf("-------------(Inserting the string into defined DFA)-------------\n");
 		//Analysis
 		switch(KEY)
 		{
@@ -116,6 +149,9 @@ int defineDFA(){
 				break;
 			case 2:
 				endWith(inputString,inputSymboles,len,NUMBER_OF_INPUT_SYMBOLS);
+				break;
+			case 3:
+				substring(inputString,inputSymboles,len,NUMBER_OF_INPUT_SYMBOLS);
 				break;
 			default:
 				printf("Unidentified type of DFA assigned\n");
@@ -133,8 +169,9 @@ int defineDFA(){
 }
 int main()
 {
-	printf("------------------------------(Defining the DFA)------------------------------\n");
+	printf("#######################################(Defining the DFA)#######################################\n");
 	defineDFA();
-	printf("\n\n------------------------------(End)------------------------------\n");
+	end: 
+		printf("\n\n###########################################(End)################################################\n");
 	return 0;
 }
